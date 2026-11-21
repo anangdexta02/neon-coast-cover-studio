@@ -15,6 +15,14 @@ import { cpSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildDossier } from './vendor/makefun-app.ts';
+import { readdirSync, statSync } from 'node:fs';
+
+// Neon Coast — Cover Studio: this entry hands in a browser cover-art maker
+// for the original game "Neon Coast: Sunset Shores" — a nine-panel collage
+// studio with colour grades, finishes and cover lettering, built in place of
+// the kit's plain Cover Snap plumbing described above.
+const STUDIO_NAME = 'Neon Coast — Cover Studio';
+const MIN_SCREENSHOT_BYTES = 8192;
 
 const here = fileURLToPath(new URL('.', import.meta.url));
 const out = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
@@ -38,3 +46,21 @@ writeFileSync(
     app_path_max_bytes: 1000,
   }),
 );
+
+// Studio self-check: the dossier is only worth handing in if the cover
+// screenshots actually came along and are real renders, not empty stubs.
+// Fail loudly here rather than let a hollow entry reach the judge.
+const shotDir = join(out, 'screenshots');
+const shotFiles = existsSync(shotDir)
+  ? readdirSync(shotDir).filter((name) => /\.(png|jpe?g)$/i.test(name)).sort()
+  : [];
+if (shotFiles.length === 0) {
+  throw new Error(`${STUDIO_NAME}: no screenshots were copied to ${shotDir}`);
+}
+for (const name of shotFiles) {
+  const { size } = statSync(join(shotDir, name));
+  if (size < MIN_SCREENSHOT_BYTES) {
+    throw new Error(`${STUDIO_NAME}: screenshot ${name} is only ${size} bytes — too small to be a real cover render`);
+  }
+}
+console.log(`${STUDIO_NAME}: dossier written with ${shotFiles.length} screenshots (${shotFiles.join(', ')})`);
