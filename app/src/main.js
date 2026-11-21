@@ -423,6 +423,20 @@ function placeOrSelect(index) {
 
 function wireCanvas() {
   canvas.addEventListener('click', (e) => placeOrSelect(panelIndexAt(e.clientX, e.clientY)));
+  canvas.addEventListener('dblclick', (e) => {
+    const index = panelIndexAt(e.clientX, e.clientY);
+    if (index < 0) return;
+    commit((s) => {
+      const p = s.panels[index];
+      p.zoom = 1;
+      p.rot = 0;
+      p.flip = false;
+      p.dx = 0;
+      p.dy = 0;
+      s.selected = index;
+    });
+    toast(`Panel ${index + 1} framing reset`);
+  });
   const wrap = $('canvas-wrap');
   wrap.addEventListener('dragover', (e) => e.preventDefault());
   wrap.addEventListener('drop', (e) => {
