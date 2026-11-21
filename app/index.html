@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neon Coast — Cover Studio</title>
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="wordmark">NEON COAST <span>— COVER STUDIO</span></div>
+  <div class="topbar-actions">
+    <button id="undo-btn" type="button" title="Undo (Ctrl+Z)">&#8630; Undo</button>
+    <button id="redo-btn" type="button" title="Redo (Ctrl+Y)">&#8631; Redo</button>
+    <button id="reset-btn" type="button" title="Back to the default cover">Reset</button>
+  </div>
+</header>
+
+<main class="layout">
+  <aside class="library">
+    <h2>Photos</h2>
+    <div id="photo-strip"></div>
+    <label class="upload-btn" for="upload-input">+ Upload photos</label>
+    <input id="upload-input" type="file" accept="image/*" multiple hidden>
+    <p class="hint">Pick a photo, then click a panel to place it. Or drag a photo onto the cover.</p>
+  </aside>
+
+  <section class="stage">
+    <div id="canvas-wrap">
+      <canvas id="cover" width="1080" height="1080"></canvas>
+      <div id="sel-label">Panel 5 selected</div>
+    </div>
+  </section>
+
+  <aside class="panel">
+    <h2>Layout</h2>
+    <div id="layout-grid" class="btn-grid"></div>
+
+    <h2>Grade</h2>
+    <div id="grade-grid" class="btn-grid"></div>
+
+    <h2>Finishes</h2>
+    <label class="ctl"><span>Ink (duotone)</span><input id="ink-range" type="range" min="0" max="100" value="35"></label>
+    <label class="ctl"><span>Grain</span><input id="grain-range" type="range" min="0" max="100" value="30"></label>
+    <label class="ctl"><span>Vignette</span><input id="vignette-range" type="range" min="0" max="100" value="45"></label>
+    <label class="ctl"><span>Halftone</span><input id="halftone-range" type="range" min="0" max="100" value="0"></label>
+    <label class="ctl check"><input id="frame-toggle" type="checkbox" checked><span>Cream frame</span></label>
+
+    <h2>Lettering</h2>
+    <label class="ctl"><span>Banner</span><input id="banner-input" type="text" value="A SUNSET SHORES ORIGINAL"></label>
+    <label class="ctl"><span>Title</span><input id="title-input" type="text" value="NEON COAST"></label>
+    <label class="ctl"><span>Subtitle</span><input id="subtitle-input" type="text" value="sunset strip stories"></label>
+    <label class="ctl"><span>Title fill</span>
+      <select id="title-fill-select">
+        <option value="sunset" selected>Sunset gradient</option>
+        <option value="neon">Neon glow</option>
+        <option value="gold">Gold</option>
+        <option value="white">White</option>
+      </select>
+    </label>
+    <label class="ctl"><span>Title size</span><input id="title-size-range" type="range" min="60" max="140" value="100"></label>
+    <label class="ctl"><span>Placement</span>
+      <select id="placement-select">
+        <option value="bottom" selected>Bottom</option>
+        <option value="top">Top</option>
+        <option value="center">Center</option>
+      </select>
+    </label>
+
+    <h2>Details</h2>
+    <div class="ctl"><span>Heat rating</span>
+      <div id="stars-row">
+        <button type="button" class="star-btn" data-value="1">&#9733;</button>
+        <button type="button" class="star-btn" data-value="2">&#9733;</button>
+        <button type="button" class="star-btn" data-value="3">&#9733;</button>
+        <button type="button" class="star-btn" data-value="4">&#9733;</button>
+        <button type="button" class="star-btn" data-value="5">&#9733;</button>
+      </div>
+    </div>
+    <label class="ctl check"><input id="ribbon-toggle" type="checkbox" checked><span>Corner ribbon</span></label>
+    <label class="ctl"><span>Ribbon text</span><input id="ribbon-text-input" type="text" value="SPECIAL EDITION"></label>
+    <label class="ctl check"><input id="badge-toggle" type="checkbox" checked><span>18+ badge</span></label>
+
+    <h2>Selected panel</h2>
+    <label class="ctl"><span>Panel grade</span>
+      <select id="panel-grade-select"></select>
+    </label>
+    <label class="ctl"><span>Zoom</span><input id="panel-zoom-range" type="range" min="50" max="300" value="100"></label>
+    <label class="ctl"><span>Rotate</span><input id="panel-rot-range" type="range" min="-45" max="45" value="0"></label>
+    <div class="ctl btn-row">
+      <button id="panel-flip-btn" type="button">Flip</button>
+      <button id="panel-clear-btn" type="button">Clear photo</button>
+    </div>
+    <div class="ctl"><span>Nudge</span>
+      <div class="nudge-pad">
+        <button type="button" class="nudge-btn" data-dx="0" data-dy="-0.02">&#8593;</button>
+        <button type="button" class="nudge-btn" data-dx="-0.02" data-dy="0">&#8592;</button>
+        <button type="button" class="nudge-btn" data-dx="0.02" data-dy="0">&#8594;</button>
+        <button type="button" class="nudge-btn" data-dx="0" data-dy="0.02">&#8595;</button>
+      </div>
+    </div>
+
+    <h2>Canvas &amp; export</h2>
+    <label class="ctl"><span>Aspect</span>
+      <select id="aspect-select">
+        <option value="1:1" selected>Square 1:1</option>
+        <option value="4:5">Portrait 4:5</option>
+        <option value="9:16">Story 9:16</option>
+        <option value="16:9">Wide 16:9</option>
+      </select>
+    </label>
+    <label class="ctl"><span>Export size</span>
+      <select id="export-size-select">
+        <option value="1080x1080" selected>Instagram post — 1080×1080</option>
+        <option value="1080x1920">Story — 1080×1920</option>
+        <option value="1600x900">X post — 1600×900</option>
+        <option value="2400x2400">Print — 2400×2400</option>
+      </select>
+    </label>
+    <button id="export-btn" type="button" class="export-btn">Export PNG</button>
+  </aside>
+</main>
+
+<div id="toast" role="status"></div>
+
+<script type="module" src="src/main.js"></script>
+</body>
+</html>
